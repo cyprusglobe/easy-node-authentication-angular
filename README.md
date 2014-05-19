@@ -671,7 +671,7 @@ Hopefully you were able to convert the Easy-Node-Authentication-Tutorial into an
 
 We are working on a project which uses a spinoff of this tutorial. If you are interested in a more advanced login system, feel free to contact us with your questions/ideas.
 
-* Tweet us: @brandonmcquarie or @chrisheninger
+* Tweet us: [@brandonmcquarie](https://twitter.com/brandonmcquarie) or [@chrisheninger](https://twitter.com/chrisheninger)
 * Email us: brandon.mcquarie@gmail.com or chris@igravitydesign.com
 
 Non-Angular Node Authentication Tutorial From Scotch.io
