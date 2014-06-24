@@ -104,10 +104,10 @@ For the Angular system, we want one file `index.html` which will contain the hea
                 <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
             </div>
 
-        	<div class="text-center">
+            <div class="text-center">
                 <p>Angular conversion by <a href="http://brandonmcquarie.com/">Brandon</a> and <a href="http://chrisheninger.com/">Chris</a>. Visit the <a href="https://github.com/brandonmcquarie/easy-node-authentication-angular">Github Repo</a>.</p>
                 <p>Original Node/Express demo by <a href="http://scotch.io">Scotch</a>. Visit the <a href="http://scotch.io/tutorials/javascript/easy-node-authentication-setup-and-local">tutorial</a>.</p>
-        	</div>
+            </div>
 
         </div>
     </body>
@@ -671,7 +671,7 @@ Hopefully you were able to convert the Easy-Node-Authentication-Tutorial into an
 
 We are working on a project which uses a spinoff of this tutorial. If you are interested in a more advanced login system, feel free to contact us with your questions/ideas.
 
-* Tweet us: [@brandonmcquarie](https://twitter.com/brandonmcquarie) or [@chrisheninger](https://twitter.com/chrisheninger)
+* Tweet us: @brandonmcquarie or @chrisheninger
 * Email us: brandon.mcquarie@gmail.com or chris@igravitydesign.com
 
 Non-Angular Node Authentication Tutorial From Scotch.io

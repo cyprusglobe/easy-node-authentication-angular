@@ -2,22 +2,10 @@ module.exports = function(app, passport) {
 
 // normal routes ===============================================================
 
-	// show the home page (will also have our login links)
-	app.get('/', function(req, res) {
-		res.render('index.ejs');
-	});
-
-	// PROFILE SECTION =========================
-	app.get('/profile', isLoggedIn, function(req, res) {
-		res.render('profile.ejs', {
-			user : req.user
-		});
-	});
-
 	// LOGOUT ==============================
-	app.get('/logout', function(req, res) {
+	app.post('/logout', function(req, res) {
 		req.logout();
-		res.redirect('/');
+		res.json({ redirect: '/logout' });
 	});
 
 // =============================================================================
@@ -26,30 +14,51 @@ module.exports = function(app, passport) {
 
 	// locally --------------------------------
 		// LOGIN ===============================
-		// show the login form
-		app.get('/login', function(req, res) {
-			res.render('login.ejs', { message: req.flash('loginMessage') });
-		});
 
 		// process the login form
-		app.post('/login', passport.authenticate('local-login', {
-			successRedirect : '/profile', // redirect to the secure profile section
-			failureRedirect : '/login', // redirect back to the signup page if there is an error
-			failureFlash : true // allow flash messages
-		}));
-
-		// SIGNUP =================================
-		// show the signup form
-		app.get('/signup', function(req, res) {
-			res.render('signup.ejs', { message: req.flash('signupMessage') });
+		app.post('/login', function(req, res, next) {
+		    if (!req.body.email || !req.body.password) {
+		        return res.json({ error: 'Email and Password required' });
+		    }
+		    passport.authenticate('local-login', function(err, user, info) {
+		        if (err) { 
+		            return res.json(err);
+		        }
+		        if (user.error) {
+		            return res.json({ error: user.error });
+		        }
+		        req.logIn(user, function(err) {
+		            if (err) {
+		                return res.json(err);
+		            }
+		            return res.json({ redirect: '/profile' });
+		        });
+		    })(req, res);
 		});
 
+		// SIGNUP =================================
+
 		// process the signup form
-		app.post('/signup', passport.authenticate('local-signup', {
-			successRedirect : '/profile', // redirect to the secure profile section
-			failureRedirect : '/signup', // redirect back to the signup page if there is an error
-			failureFlash : true // allow flash messages
-		}));
+		app.post('/signup', function(req, res, next) {
+		    if (!req.body.email || !req.body.password) {
+		        return res.json({ error: 'Email and Password required' });
+		    }
+		    passport.authenticate('local-signup', function(err, user, info) {
+		        if (err) { 
+		            return res.json(err);
+		        }
+		        if (user.error) {
+		            return res.json({ error: user.error });
+		        }
+		        req.logIn(user, function(err) {
+		            if (err) {
+		                return res.json(err);
+		            }
+		            return res.json({ redirect: '/profile' });
+		        });
+		    })(req, res);
+		});
+
 
 	// facebook -------------------------------
 
@@ -93,14 +102,25 @@ module.exports = function(app, passport) {
 // =============================================================================
 
 	// locally --------------------------------
-		app.get('/connect/local', function(req, res) {
-			res.render('connect-local.ejs', { message: req.flash('loginMessage') });
+		app.post('/connect/local', function(req, res, next) {
+		    if (!req.body.email || !req.body.password) {
+		        return res.json({ error: 'Email and Password required' });
+		    }
+		    passport.authenticate('local-signup', function(err, user, info) {
+		        if (err) { 
+		            return res.json(err);
+		        }
+		        if (user.error) {
+		            return res.json({ error: user.error });
+		        }
+		        req.logIn(user, function(err) {
+		            if (err) {
+		                return res.json(err);
+		            }
+		            return res.json({ redirect: '/profile' });
+		        });
+		    })(req, res);
 		});
-		app.post('/connect/local', passport.authenticate('local-signup', {
-			successRedirect : '/profile', // redirect to the secure profile section
-			failureRedirect : '/connect/local', // redirect back to the signup page if there is an error
-			failureFlash : true // allow flash messages
-		}));
 
 	// facebook -------------------------------
 
@@ -183,8 +203,26 @@ module.exports = function(app, passport) {
 		});
 	});
 
+    app.get('/api/userData', isLoggedInAjax, function(req, res) {
+        return res.json(req.user);
+    });
+
+	// show the home page (will also have our login links)
+	app.get('*', function(req, res) {
+		res.sendfile('./public/views/index.html');
+	});
+
 
 };
+
+// route middleware to ensure user is logged in - ajax get
+function isLoggedInAjax(req, res, next) {
+    if (!req.isAuthenticated()) {
+        return res.json( { redirect: '/login' } );
+    } else {
+        next();
+    }
+}
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {

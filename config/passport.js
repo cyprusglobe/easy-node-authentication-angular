@@ -52,21 +52,20 @@ module.exports = function(passport) {
 
                 // if no user is found, return the message
                 if (!user)
-                    return done(null, false, req.flash('loginMessage', 'No user found.'));
+                    return done(null, { error: 'No user found. ' });
 
                 if (!user.validPassword(password))
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+                    return done(null, { error: 'Oops! Wrong password.' });
 
                 // all is well, return user
                 else
                     return done(null, user);
             });
         });
-
     }));
 
     // =========================================================================
-    // LOCAL SIGNUP ============================================================
+    // LOCAL SIGNUP =============================================================
     // =========================================================================
     passport.use('local-signup', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
@@ -87,9 +86,10 @@ module.exports = function(passport) {
                     if (err)
                         return done(err);
 
+                    console.log(user);
                     // check to see if theres already a user with that email
                     if (user) {
-                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                        return done(null, { error: 'That email is already taken.' });
                     } else {
 
                         // create the user
@@ -111,7 +111,7 @@ module.exports = function(passport) {
             } else if ( !req.user.local.email ) {
                 // ...presumably they're trying to connect a local account
                 var user            = req.user;
-                user.local.email    = email;
+                    user.local.email    = email;
                 user.local.password = user.generateHash(password);
                 user.save(function(err) {
                     if (err)
@@ -126,6 +126,7 @@ module.exports = function(passport) {
         });
 
     }));
+
 
     // =========================================================================
     // FACEBOOK ================================================================
